@@ -7,7 +7,6 @@ import br.com.gestaofinanceira.service_user.infrastructure.gateway.ApachePoiUser
 import br.com.gestaofinanceira.service_user.infrastructure.gateway.UserEntityMapper;
 import br.com.gestaofinanceira.service_user.infrastructure.gateway.UserRepositoryAdapter;
 import br.com.gestaofinanceira.service_user.infrastructure.persistence.UserRepositoryJpa;
-import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -61,4 +60,5 @@ public class UserConfig {
     public UserEntityMapper userEntityMapper(){
         return new UserEntityMapper();
     }
+
 }
