@@ -1,6 +1,5 @@
 package br.com.gestaofinanceira.service_user.application.use_cases;
 
-import br.com.gestaofinanceira.service_user.application.BatchResult;
 import br.com.gestaofinanceira.service_user.application.command.CreateUserCommand;
 import br.com.gestaofinanceira.service_user.application.gateway.UserBatchReader;
 

@@ -2,6 +2,7 @@ package br.com.gestaofinanceira.service_user.infrastructure.gateway;
 
 import br.com.gestaofinanceira.service_user.application.command.CreateUserCommand;
 import br.com.gestaofinanceira.service_user.application.gateway.UserBatchReader;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,7 +34,8 @@ public class ApachePoiUserBatchReader implements UserBatchReader {
 
                 String name = row.getCell(0).getStringCellValue();
                 String email = row.getCell(1).getStringCellValue();
-                String cpf = row.getCell(2).getStringCellValue();
+                row.getCell(2).setCellType(CellType.STRING);
+                String cpf = row.getCell(2).getStringCellValue().trim();
                 LocalDate birthDate =
                         row.getCell(3).getLocalDateTimeCellValue().toLocalDate();
                 String passwordHash = row.getCell(4).getStringCellValue();

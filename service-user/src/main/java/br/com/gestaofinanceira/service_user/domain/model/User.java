@@ -8,34 +8,39 @@ import br.com.gestaofinanceira.service_user.domain.exception.UserAlreadyInactive
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.Objects;
+import java.util.UUID;
 
 public class User {
+
+    private final UUID publicId;
+
     private final String cpf;
+    private final String passwordHash;
+
     private String name;
     private String email;
-    private final String passwordHash;
+    private Status status;
+
     private final LocalDate birthDate;
     private final Role role;
-    private Status status;
     private final LocalDateTime createdAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
-    public User(String cpf, String name, String email, String passwordHash, LocalDate birthDate) {
-        this.cpf = cpf;
-        this.name = name;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.birthDate = birthDate;
-        this.role = Role.USER;
-        this.status = Status.ACTIVE;
-        this.createdAt = LocalDateTime.now();
-    }
-
-    public User(String cpf, String name, String email, String passwordHash, LocalDate birthDate,
-                Role role, Status status, LocalDateTime createdAt, LocalDateTime updateAt,
-                LocalDateTime deletedAt) {
+    public User(
+            UUID publicId,
+            String cpf,
+            String name,
+            String email,
+            String passwordHash,
+            LocalDate birthDate,
+            Role role,
+            Status status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            LocalDateTime deletedAt
+    ) {
+        this.publicId = publicId;
         this.cpf = cpf;
         this.name = name;
         this.email = email;
@@ -44,7 +49,7 @@ public class User {
         this.role = role;
         this.status = status;
         this.createdAt = createdAt;
-        this.updateAt = updateAt;
+        this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
     }
 
@@ -59,28 +64,56 @@ public class User {
         validateAge(birthDate);
         validateEmail(email);
 
-        return new User(cpf, name, normalizeEmail(email), passwordHash, birthDate);
+        return new User(
+                UUID.randomUUID(),
+                cpf,
+                name,
+                normalizeEmail(email),
+                passwordHash,
+                birthDate,
+                Role.USER,
+                Status.ACTIVE,
+                LocalDateTime.now(),
+                null,
+                null
+        );
     }
 
     public void deactivate() {
-        if (this.status == Status.INACTIVE) {
+        if (status == Status.INACTIVE) {
             throw new UserAlreadyInactiveException();
         }
         this.status = Status.INACTIVE;
         this.deletedAt = LocalDateTime.now();
+        touch();
     }
 
     public void updateEmail(String newEmail) {
         validateEmail(newEmail);
         this.email = normalizeEmail(newEmail);
+        touch();
     }
 
     public void updateName(String name) {
         this.name = name;
+        touch();
+    }
+
+    public void updatedAtNew(){
+        this.updatedAt = LocalDateTime.now();
+    }
+    public void ensureCanAuthenticate() {
+        if (!isActive()) {
+            throw new UserAlreadyInactiveException();
+        }
     }
 
     public boolean isActive() {
-        return this.status == Status.ACTIVE && this.deletedAt == null;
+        return status == Status.ACTIVE && deletedAt == null;
+    }
+
+    private void touch() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     private static void validateCpf(String cpf) {
@@ -95,6 +128,7 @@ public class User {
             throw new UnderageUserException();
         }
     }
+
     private static void validateEmail(String email) {
         if (email == null || !email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
             throw new InvalidEmailException();
@@ -105,9 +139,9 @@ public class User {
         return email.toLowerCase().trim();
     }
 
-    public void updateAt(){
-        updateAt = LocalDateTime.now();
-   }
+    public UUID getPublicId() {
+        return publicId;
+    }
 
     public String getCpf() {
         return cpf;
@@ -141,12 +175,11 @@ public class User {
         return createdAt;
     }
 
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
     public LocalDateTime getDeletedAt() {
         return deletedAt;
     }
-
 }

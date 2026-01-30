@@ -6,11 +6,13 @@ import br.com.gestaofinanceira.service_user.domain.exception.EmailAlreadyExistsE
 import br.com.gestaofinanceira.service_user.domain.exception.UserNotFoundException;
 import br.com.gestaofinanceira.service_user.domain.model.User;
 
+import java.util.UUID;
+
 public record UpdateUserUseCase(UserRepository repository) {
 
-    public User execute(UpdateUserCommand command, String cpf) {
+    public User execute(UpdateUserCommand command, UUID publicId) {
 
-        User user = repository.findByCpf(cpf)
+        User user = repository.findByPublicId(publicId)
                 .orElseThrow(UserNotFoundException::new);
 
         repository.findByEmail(command.email)
@@ -26,9 +28,9 @@ public record UpdateUserUseCase(UserRepository repository) {
             user.updateEmail(command.email);
         }
 
-        user.updateAt();
+        user.updatedAtNew();
 
-        return repository.save(user);
+        return repository.update(user);
 
     }
 
