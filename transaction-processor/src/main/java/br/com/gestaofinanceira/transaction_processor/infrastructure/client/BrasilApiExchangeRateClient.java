@@ -6,6 +6,7 @@ import br.com.gestaofinanceira.transaction_processor.infrastructure.dto.BrasilAp
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @Component
@@ -28,11 +29,18 @@ public class BrasilApiExchangeRateClient implements ExchangeRateClient {
             );
         }
 
-        String today = LocalDate.now().minusDays(1).toString();
-        System.out.println(today);
+        LocalDate date = LocalDate.now().minusDays(1);
+
+        if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            date = date.minusDays(2);
+        } else if (date.getDayOfWeek() == DayOfWeek.SATURDAY) {
+            date = date.minusDays(1);
+        }
+
+        String formattedDate = date.toString();
 
         BrasilApiExchangeResponse response = webClient.get()
-                .uri("/cambio/v1/cotacao/{moeda}/{data}", from, today)
+                .uri("/cambio/v1/cotacao/{moeda}/{data}", from, formattedDate)
                 .retrieve()
                 .bodyToMono(BrasilApiExchangeResponse.class)
                 .block();
@@ -44,7 +52,6 @@ public class BrasilApiExchangeRateClient implements ExchangeRateClient {
         BrasilApiExchangeResponse.Cotacao cotacao =
                 response.cotacoes().get(0);
 
-        System.out.println(cotacao);
         return new ExchangeRate(
                 cotacao.cotacao_venda(),
                 from,
