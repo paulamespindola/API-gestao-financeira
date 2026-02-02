@@ -19,7 +19,7 @@ public class JwtTokenVerifier implements TokenVerifier {
 
     public JwtTokenVerifier(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.issuer:service-user}") String issuer
+            @Value("${jwt.issuer}") String issuer
     ) {
         this.secret = secret;
         this.issuer = issuer;

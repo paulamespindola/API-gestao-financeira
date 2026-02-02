@@ -5,6 +5,7 @@ import br.com.gestaofinanceira.transaction_processor.application.gateway.Account
 import br.com.gestaofinanceira.transaction_processor.application.gateway.TransactionProcessor;
 import br.com.gestaofinanceira.transaction_processor.application.gateway.TransactionRepository;
 import br.com.gestaofinanceira.transaction_processor.infrastructure.persistence.TransactionEntity;
+import br.com.gestaofinanceira.transaction_processor.infrastructure.persistence.TransactionRepositoryJpa;
 import br.com.gestaofinanceira.transaction_processor.infrastructure.persistence.TransactionStatus;
 import br.com.gestaofinanceira.transaction_processor.infrastructure.persistence.TransactionType;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 class ProcessTransactionServiceTest {
 
     @Mock
-    TransactionRepository repository;
+    TransactionRepositoryJpa repository;
 
     @Mock
     AccountClient accountClient;

@@ -5,18 +5,17 @@ import br.com.gestaofinanceira.transaction_processor.infrastructure.dto.Transact
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class TransactionKafkaConsumer {
 
-    private final ProcessTransactionService useCase;
+    private final ProcessTransactionService service;
 
-    public TransactionKafkaConsumer(ProcessTransactionService useCase) {
-        this.useCase = useCase;
+    public TransactionKafkaConsumer(ProcessTransactionService service) {
+        this.service = service;
     }
 
     @KafkaListener(topics = "transaction.request", groupId = "transaction-processor")
     public void consume(TransactionRequestedEvent event) {
-        useCase.process(event.transactionId());
+        service.process(event.transactionId());
     }
 }
