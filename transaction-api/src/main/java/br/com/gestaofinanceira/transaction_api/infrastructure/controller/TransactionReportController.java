@@ -3,7 +3,6 @@ package br.com.gestaofinanceira.transaction_api.infrastructure.controller;
 import br.com.gestaofinanceira.transaction_api.application.usecase.GenerateTransactionReportUseCase;
 import br.com.gestaofinanceira.transaction_api.domain.model.Transaction;
 import br.com.gestaofinanceira.transaction_api.infrastructure.report.ExcelReportGenerator;
-import br.com.gestaofinanceira.transaction_api.infrastructure.report.PdfReportGenerator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +30,6 @@ public class TransactionReportController {
 
     @GetMapping
     public ResponseEntity<byte[]> generate(
-            @RequestParam String format,
             @RequestParam Instant start,
             @RequestParam Instant end,
             Authentication authentication
@@ -41,19 +39,13 @@ public class TransactionReportController {
         List<Transaction> transactions =
                 useCase.execute(userId, start, end);
 
-//        byte[] file = format.equalsIgnoreCase("pdf")
-//                ? pdfGenerator.generate(transactions)
-//                : excelGenerator.generate(transactions);
         byte[] file = excelGenerator.generate(transactions);
 
-//        String contentType = format.equalsIgnoreCase("pdf")
-//                ? "application/pdf"
-//                : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         String contentType =  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=transactions." + format)
+                        "attachment; filename=transactions." + ".xlsx")
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(file);
     }

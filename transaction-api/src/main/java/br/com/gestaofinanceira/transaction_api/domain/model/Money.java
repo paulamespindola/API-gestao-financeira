@@ -13,7 +13,7 @@ public class Money {
 
     public Money(BigDecimal amount, Currency currency) {
         if (amount == null || amount.signum() < 0) {
-            throw new IllegalArgumentException("Valor monetário inválido");
+            throw new IllegalArgumentException("Invalid monetary value");
         }
         this.amount = amount;
         this.currency = Objects.requireNonNull(currency);
@@ -21,7 +21,7 @@ public class Money {
 
     public void validateSameCurrency(Money other) {
         if (!this.currency.equals(other.currency)) {
-            throw new DomainException("Moeda não pode ser alterada");
+            throw new DomainException("Currency cannot be changed");
         }
     }
 

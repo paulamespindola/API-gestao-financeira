@@ -1,7 +1,6 @@
 package br.com.gestaofinanceira.transaction_api.application.usecase;
 
 import br.com.gestaofinanceira.transaction_api.application.gateway.TransactionRepository;
-import br.com.gestaofinanceira.transaction_api.domain.exception.DomainException;
 import br.com.gestaofinanceira.transaction_api.domain.exception.TransactionNotFoundException;
 import br.com.gestaofinanceira.transaction_api.domain.exception.UnauthorizedTransactionAccessException;
 import br.com.gestaofinanceira.transaction_api.domain.model.Transaction;

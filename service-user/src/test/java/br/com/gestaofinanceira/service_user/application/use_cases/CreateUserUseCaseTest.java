@@ -2,6 +2,7 @@ package br.com.gestaofinanceira.service_user.application.use_cases;
 
 import br.com.gestaofinanceira.service_user.application.command.CreateUserCommand;
 import br.com.gestaofinanceira.service_user.application.gateway.UserRepository;
+import br.com.gestaofinanceira.service_user.application.port.PasswordHasher;
 import br.com.gestaofinanceira.service_user.domain.exception.EmailAlreadyExistsException;
 import br.com.gestaofinanceira.service_user.domain.exception.UserAlreadyExistsException;
 import br.com.gestaofinanceira.service_user.domain.model.User;
@@ -21,11 +22,12 @@ class CreateUserUseCaseTest {
 
     private UserRepository repository;
     private CreateUserUseCase useCase;
+    private PasswordHasher passwordHasher;
 
     @BeforeEach
     void setUp() {
         repository = Mockito.mock(UserRepository.class);
-        useCase = new CreateUserUseCase(repository);
+        useCase = new CreateUserUseCase(repository, passwordHasher);
     }
 
     private CreateUserCommand validCommand() {
