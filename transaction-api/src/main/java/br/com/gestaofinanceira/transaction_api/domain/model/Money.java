@@ -3,6 +3,7 @@ package br.com.gestaofinanceira.transaction_api.domain.model;
 import br.com.gestaofinanceira.transaction_api.domain.exception.DomainException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Objects;
 
@@ -12,10 +13,17 @@ public class Money {
     private final Currency currency;
 
     public Money(BigDecimal amount, Currency currency) {
-        if (amount == null || amount.signum() < 0) {
-            throw new IllegalArgumentException("Invalid monetary value");
+        if (amount == null) {
+            throw new DomainException("Amount cannot be null");
         }
-        this.amount = amount;
+
+        BigDecimal normalized = amount.setScale(2, RoundingMode.HALF_EVEN);
+
+        if (normalized.signum() < 0) {
+            throw new DomainException("Invalid monetary value");
+        }
+
+        this.amount = normalized;
         this.currency = Objects.requireNonNull(currency);
     }
 

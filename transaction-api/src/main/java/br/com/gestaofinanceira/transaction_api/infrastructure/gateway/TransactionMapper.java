@@ -39,24 +39,34 @@ public class TransactionMapper {
 
         return e;
     }
+
     public Transaction toDomain(TransactionEntity entity) {
+
+        Money originalAmount = new Money(
+                entity.getOriginalAmount(),
+                Currency.getInstance(entity.getOriginalCurrency())
+        );
+
+        Money convertedAmount = null;
+        if (entity.getConvertedAmount() != null) {
+            convertedAmount = new Money(
+                    entity.getConvertedAmount(),
+                    Currency.getInstance(entity.getConvertedCurrency())
+            );
+        }
+
         return new Transaction(
                 entity.getId(),
                 entity.getUserId(),
-                entity.getType(),entity.getCategory(),
+                entity.getType(),
+                entity.getCategory(),
                 entity.getStatus(),
                 entity.getCreatedAt(),
-                new Money(
-                        entity.getOriginalAmount(),
-                        Currency.getInstance("BRL")
-                ), new Money(
-                        entity.getConvertedAmount(),
-                        Currency.getInstance("BRL")
-                ),
+                originalAmount,
+                convertedAmount,
                 entity.getDestination(),
                 entity.getDescription(),
                 entity.isExternal()
         );
     }
-
 }
